@@ -1,4 +1,4 @@
-import typesetting from './typesetting';
+import typesetting from './canvas';
 
 window.onload = () => {
     new typesetting({

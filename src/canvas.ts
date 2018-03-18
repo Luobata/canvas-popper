@@ -9,7 +9,7 @@ interface textConfig {
     color: string;
     padding: string;
 }
-export default class TypeSetting {
+export default class Canvas {
     config: textConfig;
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;

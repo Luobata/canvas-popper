@@ -1,7 +1,7 @@
 {
-    "name": "canvas-popper",
+    "name": "canvas-text-layout",
     "version": "0.0.1",
-    "description": "canvas popper",
+    "description": "canvas",
     "main": "dist/bundle.js",
     "scripts": {
         "build": "rollup -c build/rollup.config.js",
