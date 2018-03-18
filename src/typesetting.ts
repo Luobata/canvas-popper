@@ -26,6 +26,7 @@ export default class TypeSetting {
 
     testCaseInit() {
         const div = document.createElement('div');
+        const canvasWrap = document.createElement('div');
         div.innerText = this.config.text;
         div.style.width = this.config.width;
         div.style.fontSize = this.config.fontSize;
@@ -33,19 +34,25 @@ export default class TypeSetting {
         div.style.padding = this.config.padding;
         div.style.color = this.config.color;
         div.style.border = '1px solid black';
+        div.style.textAlign = 'left';
 
-        this.canvas.style.border = '1px solid black';
-        this.canvas.style.margin = '20px 0 0 0';
+        canvasWrap.style.width = this.config.width;
+        canvasWrap.style.border = '1px solid black';
+        canvasWrap.style.margin = '20px 0 0 0';
+        canvasWrap.style.textAlign = 'center';
+        canvasWrap.style.fontSize = '0';
 
+        canvasWrap.appendChild(this.canvas);
         this.body.appendChild(div);
-        this.body.appendChild(this.canvas);
+        this.body.appendChild(canvasWrap);
     }
 
     canvasInit() {
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
-        this.canvas.width = parseInt(this.config.width, 10);
-        this.canvas.height = this.init();
+        const size = this.init();
+        this.canvas.width = size.width;
+        this.canvas.height = size.height;
     }
 
     init() {
@@ -80,11 +87,16 @@ export default class TypeSetting {
         this.ctx.fillStyle = this.config.color;
         this.ctx.font = `${this.config.fontSize} ${this.config.fontFamily}`;
         this.ctx.textBaseline = 'top';
+        let maxWidth = 0;
         for (const i of this.config.text) {
             const width = getWidth(i);
             const eX = beginX + width;
             const margin = getMargin(i);
             if (eX > endX) {
+                console.log(beginX);
+                if (beginX > maxWidth) {
+                    maxWidth = beginX;
+                }
                 beginX = startX;
                 beginY += lineHeight;
                 this.ctx.fillText(i, beginX, beginY);
@@ -96,6 +108,9 @@ export default class TypeSetting {
         }
         this.ctx.restore();
 
-        return beginY + startY + lineHeight;
+        return {
+            width: maxWidth,
+            height: beginY + startY + lineHeight,
+        };
     }
 }
