@@ -14,7 +14,7 @@ var Canvas = /** @class */function () {
         this.body = document.body;
         this.canvasInit();
         this.init();
-        this.testCaseInit();
+        //this.testCaseInit();
     }
     Canvas.prototype.testCaseInit = function () {
         var div = document.createElement('div');
@@ -82,7 +82,7 @@ var Canvas = /** @class */function () {
             var eX = beginX + width;
             var margin = getMargin(i);
             if (eX > endX) {
-                console.log(beginX);
+                // console.log(beginX);
                 if (beginX > maxWidth) {
                     maxWidth = beginX;
                 }

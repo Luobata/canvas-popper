@@ -21,7 +21,7 @@ export default class Canvas {
 
         this.canvasInit();
         this.init();
-        this.testCaseInit();
+        //this.testCaseInit();
     }
 
     testCaseInit() {
@@ -93,7 +93,7 @@ export default class Canvas {
             const eX = beginX + width;
             const margin = getMargin(i);
             if (eX > endX) {
-                console.log(beginX);
+                // console.log(beginX);
                 if (beginX > maxWidth) {
                     maxWidth = beginX;
                 }
