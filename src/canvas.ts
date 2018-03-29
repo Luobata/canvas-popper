@@ -15,10 +15,18 @@ interface textConfig {
     padding: string;
     type: type;
 }
+let inputDiv: HTMLDivElement;
+
+const getLength = (str: string) => {
+    inputDiv.innerHTML = <string>new String(str.replace(/[ ]/g, '&nbsp;'));
+    return inputDiv.getBoundingClientRect().width;
+};
+
 export default class Canvas {
     config: textConfig;
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
+    dom: HTMLDivElement;
     body: HTMLElement;
     rate: number;
 
@@ -27,9 +35,14 @@ export default class Canvas {
         this.body = document.body;
         this.rate = window.devicePixelRatio;
 
-        this.canvasInit();
-        this.init();
-        this.testCaseInit();
+        if (this.config.type === 'canvas') {
+            this.canvasInit();
+            this.init();
+            // this.testCaseInit();
+        } else {
+            this.domInit();
+            // this.testDomInit();
+        }
     }
 
     testCaseInit() {
@@ -55,6 +68,19 @@ export default class Canvas {
         this.body.appendChild(canvasWrap);
     }
 
+    testDomInit() {
+        const div = document.createElement('div');
+        div.style.width = this.config.width;
+        div.style.padding = this.config.padding;
+        div.style.color = this.config.color;
+        div.style.border = '1px solid black';
+        div.style.textAlign = 'center';
+        div.style.margin = '20px 0 0 0';
+        div.appendChild(this.dom);
+
+        this.body.appendChild(div);
+    }
+
     canvasInit() {
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
@@ -63,6 +89,45 @@ export default class Canvas {
         this.canvas.height = size.height * this.rate;
         this.canvas.style.width = size.width + 'px';
         this.canvas.style.height = size.height + 'px';
+    }
+
+    domInit() {
+        if (!inputDiv) {
+            inputDiv = <HTMLDivElement>document.createElement('div');
+            inputDiv.style.position = 'absolute';
+            inputDiv.style.display = 'inline-block';
+            inputDiv.style.visibility = 'hidden';
+            inputDiv.style.fontSize = this.config.fontSize;
+            inputDiv.style.fontFamily = this.config.fontFamily;
+            document.body.appendChild(inputDiv);
+        }
+        const startX = parseInt(this.config.padding, 10);
+        const startY = startX;
+        const endX = parseInt(this.config.width, 10) - startX;
+        let beginX = startX;
+        let beginY = startY;
+        let maxWidth = 0;
+        for (const i of this.config.text) {
+            const width = getLength(i);
+            const eX = beginX + width;
+            if (eX > endX) {
+                if (beginX > maxWidth) {
+                    maxWidth = beginX;
+                }
+                beginX = startX + width;
+            } else {
+                beginX = eX;
+            }
+        }
+
+        this.dom = document.createElement('div');
+        this.dom.style.width = maxWidth + 'px';
+        this.dom.innerText = this.config.text;
+        this.dom.style.display = 'inline-block';
+        this.dom.style.fontSize = this.config.fontSize;
+        this.dom.style.fontFamily = this.config.fontFamily;
+        this.dom.style.textAlign = 'left';
+        this.dom.style.color = this.config.color;
     }
 
     init() {
