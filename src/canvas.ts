@@ -1,5 +1,10 @@
 import { getMargin } from './help';
 
+enum type {
+    canvas = 'canvas',
+    dom = 'dom',
+}
+
 interface textConfig {
     text: string;
     width: string;
@@ -8,20 +13,23 @@ interface textConfig {
     lineHeight?: string | number;
     color: string;
     padding: string;
+    type: type;
 }
 export default class Canvas {
     config: textConfig;
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     body: HTMLElement;
+    rate: number;
 
     constructor(config: textConfig) {
         this.config = config;
         this.body = document.body;
+        this.rate = window.devicePixelRatio;
 
         this.canvasInit();
         this.init();
-        //this.testCaseInit();
+        this.testCaseInit();
     }
 
     testCaseInit() {
@@ -51,8 +59,10 @@ export default class Canvas {
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
         const size = this.init();
-        this.canvas.width = size.width;
-        this.canvas.height = size.height;
+        this.canvas.width = size.width * this.rate;
+        this.canvas.height = size.height * this.rate;
+        this.canvas.style.width = size.width + 'px';
+        this.canvas.style.height = size.height + 'px';
     }
 
     init() {
@@ -83,9 +93,10 @@ export default class Canvas {
         let beginX = startX;
         // let beginY = startY + lineHeight;
         let beginY = startY;
+        const size = parseInt(this.config.fontSize, 10) * this.rate + 'px';
         this.ctx.save();
         this.ctx.fillStyle = this.config.color;
-        this.ctx.font = `${this.config.fontSize} ${this.config.fontFamily}`;
+        this.ctx.font = `${size} ${this.config.fontFamily}`;
         this.ctx.textBaseline = 'top';
         let maxWidth = 0;
         for (const i of this.config.text) {
@@ -99,10 +110,10 @@ export default class Canvas {
                 }
                 beginX = startX;
                 beginY += lineHeight;
-                this.ctx.fillText(i, beginX, beginY);
+                this.ctx.fillText(i, beginX * this.rate, beginY * this.rate);
                 beginX += width;
             } else {
-                this.ctx.fillText(i, beginX, beginY);
+                this.ctx.fillText(i, beginX * this.rate, beginY * this.rate);
                 beginX = eX;
             }
         }

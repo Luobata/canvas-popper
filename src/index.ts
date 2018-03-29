@@ -1,4 +1,8 @@
 import typesetting from './canvas';
+enum type {
+    canvas = 'canvas',
+    dom = 'dom',
+}
 
 window.onload = () => {
     new typesetting({
@@ -9,5 +13,6 @@ window.onload = () => {
         color: 'black',
         fontFamily: 'mocrosoft yahei',
         padding: '0px',
+        type: type.dom,
     });
 };
