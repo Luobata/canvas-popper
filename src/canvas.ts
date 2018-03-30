@@ -38,10 +38,10 @@ export default class Canvas {
         if (this.config.type === 'canvas') {
             this.canvasInit();
             this.init();
-            // this.testCaseInit();
+            this.testCaseInit();
         } else {
             this.domInit();
-            // this.testDomInit();
+            this.testDomInit();
         }
     }
 
@@ -157,12 +157,12 @@ export default class Canvas {
 
         let beginX = startX;
         // let beginY = startY + lineHeight;
-        let beginY = startY;
+        let beginY = startY + lineHeight / 2;
         const size = parseInt(this.config.fontSize, 10) * this.rate + 'px';
         this.ctx.save();
         this.ctx.fillStyle = this.config.color;
         this.ctx.font = `${size} ${this.config.fontFamily}`;
-        this.ctx.textBaseline = 'top';
+        this.ctx.textBaseline = 'middle';
         let maxWidth = 0;
         for (const i of this.config.text) {
             const width = getWidth(i);
@@ -186,7 +186,7 @@ export default class Canvas {
 
         return {
             width: maxWidth,
-            height: beginY + startY + lineHeight,
+            height: beginY + startY + lineHeight / 2,
         };
     }
 }
