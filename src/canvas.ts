@@ -57,6 +57,7 @@ export default class Canvas {
         div.style.width = this.config.width;
         div.style.fontSize = this.config.fontSize;
         div.style.fontFamily = this.config.fontFamily;
+        div.style.lineHeight = this.config.lineHeight.toString();
         div.style.padding = this.config.padding;
         div.style.color = this.config.color;
         div.style.border = '1px solid black';
@@ -131,6 +132,7 @@ export default class Canvas {
         this.dom.style.display = 'inline-block';
         this.dom.style.fontSize = this.config.fontSize;
         this.dom.style.fontFamily = this.config.fontFamily;
+        this.dom.style.lineHeight = this.config.lineHeight.toString();
         this.dom.style.textAlign = 'left';
         this.dom.style.color = this.config.color;
     }
