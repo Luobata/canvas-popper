@@ -8,13 +8,29 @@ var getMargin = function getMargin(i) {
     // 判断一个字的左右可堆积margin于优先级
 };
 
+var type;
+(function (type) {
+    type["canvas"] = "canvas";
+    type["dom"] = "dom";
+})(type || (type = {}));
+var inputDiv;
+var getLength = function getLength(str) {
+    inputDiv.innerHTML = new String(str.replace(/[ ]/g, '&nbsp;'));
+    return inputDiv.getBoundingClientRect().width;
+};
 var Canvas = /** @class */function () {
     function Canvas(config) {
         this.config = config;
         this.body = document.body;
-        this.canvasInit();
-        this.init();
-        //this.testCaseInit();
+        this.rate = window.devicePixelRatio;
+        if (this.config.type === 'canvas') {
+            this.canvasInit();
+            this.init();
+            // this.testCaseInit();
+        } else {
+            this.domInit();
+            // this.testDomInit();
+        }
     }
     Canvas.prototype.testCaseInit = function () {
         var div = document.createElement('div');
@@ -36,12 +52,63 @@ var Canvas = /** @class */function () {
         this.body.appendChild(div);
         this.body.appendChild(canvasWrap);
     };
+    Canvas.prototype.testDomInit = function () {
+        var div = document.createElement('div');
+        div.style.width = this.config.width;
+        div.style.padding = this.config.padding;
+        div.style.color = this.config.color;
+        div.style.border = '1px solid black';
+        div.style.textAlign = 'center';
+        div.style.margin = '20px 0 0 0';
+        div.appendChild(this.dom);
+        this.body.appendChild(div);
+    };
     Canvas.prototype.canvasInit = function () {
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
         var size = this.init();
-        this.canvas.width = size.width;
-        this.canvas.height = size.height;
+        this.canvas.width = size.width * this.rate;
+        this.canvas.height = size.height * this.rate;
+        this.canvas.style.width = size.width + 'px';
+        this.canvas.style.height = size.height + 'px';
+    };
+    Canvas.prototype.domInit = function () {
+        if (!inputDiv) {
+            inputDiv = document.createElement('div');
+            inputDiv.style.position = 'absolute';
+            inputDiv.style.display = 'inline-block';
+            inputDiv.style.visibility = 'hidden';
+            inputDiv.style.fontSize = this.config.fontSize;
+            inputDiv.style.fontFamily = this.config.fontFamily;
+            document.body.appendChild(inputDiv);
+        }
+        var startX = parseInt(this.config.padding, 10);
+        var startY = startX;
+        var endX = parseInt(this.config.width, 10) - startX;
+        var beginX = startX;
+        var beginY = startY;
+        var maxWidth = 0;
+        for (var _i = 0, _a = this.config.text; _i < _a.length; _i++) {
+            var i = _a[_i];
+            var width = getLength(i);
+            var eX = beginX + width;
+            if (eX > endX) {
+                if (beginX > maxWidth) {
+                    maxWidth = beginX;
+                }
+                beginX = startX + width;
+            } else {
+                beginX = eX;
+            }
+        }
+        this.dom = document.createElement('div');
+        this.dom.style.width = maxWidth + 'px';
+        this.dom.innerText = this.config.text;
+        this.dom.style.display = 'inline-block';
+        this.dom.style.fontSize = this.config.fontSize;
+        this.dom.style.fontFamily = this.config.fontFamily;
+        this.dom.style.textAlign = 'left';
+        this.dom.style.color = this.config.color;
     };
     Canvas.prototype.init = function () {
         var _this = this;
@@ -71,9 +138,10 @@ var Canvas = /** @class */function () {
         var beginX = startX;
         // let beginY = startY + lineHeight;
         var beginY = startY;
+        var size = parseInt(this.config.fontSize, 10) * this.rate + 'px';
         this.ctx.save();
         this.ctx.fillStyle = this.config.color;
-        this.ctx.font = this.config.fontSize + " " + this.config.fontFamily;
+        this.ctx.font = size + " " + this.config.fontFamily;
         this.ctx.textBaseline = 'top';
         var maxWidth = 0;
         for (var _i = 0, _a = this.config.text; _i < _a.length; _i++) {
@@ -88,10 +156,10 @@ var Canvas = /** @class */function () {
                 }
                 beginX = startX;
                 beginY += lineHeight;
-                this.ctx.fillText(i, beginX, beginY);
+                this.ctx.fillText(i, beginX * this.rate, beginY * this.rate);
                 beginX += width;
             } else {
-                this.ctx.fillText(i, beginX, beginY);
+                this.ctx.fillText(i, beginX * this.rate, beginY * this.rate);
                 beginX = eX;
             }
         }
