@@ -23,6 +23,7 @@ const getLength = (str: string) => {
 };
 
 export default class Canvas {
+    static debugger: boolean = false;
     config: textConfig;
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
@@ -38,10 +39,14 @@ export default class Canvas {
         if (this.config.type === 'canvas') {
             this.canvasInit();
             this.init();
-            this.testCaseInit();
+            if (Canvas.debugger) {
+                this.testCaseInit();
+            }
         } else {
             this.domInit();
-            this.testDomInit();
+            if (Canvas.debugger) {
+                this.testDomInit();
+            }
         }
     }
 
